@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Journey — Platform</title>
+  <meta name="description" content="Track this live train journey shared via Platform.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --card: #13131c; --border: rgba(255,255,255,0.07);
+      --white: #ffffff; --dim: rgba(255,255,255,0.45); --dimmer: rgba(255,255,255,0.2);
+      --green: #22c55e; --orange: #f97316; --red: #ef4444; --blue: #3b82f6;
+    }
+    body { background: var(--bg); color: var(--white); font-family: 'DM Sans', sans-serif; min-height: 100vh; padding: 24px 16px 60px; }
+
+    nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--white); text-decoration: none; }
+    .nav-badge { font-size: 0.7rem; font-weight: 600; color: var(--green); background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); padding: 4px 10px; border-radius: 100px; display: flex; align-items: center; gap: 6px; }
+    .live-dot { width: 5px; height: 5px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+    .container { max-width: 480px; margin: 0 auto; }
+
+    .loading { text-align: center; padding: 80px 0; }
+    .loading-spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading p { color: var(--dim); font-size: 0.9rem; }
+
+    .message { text-align: center; padding: 80px 0; }
+    .message-icon { font-size: 3rem; margin-bottom: 16px; }
+    .message h2 { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+    .message p { color: var(--dim); font-size: 0.9rem; max-width: 300px; margin: 0 auto; }
+
+    .journey-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; margin-bottom: 12px; }
+    .card-status { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; }
+    .status-left { display: flex; align-items: center; gap: 8px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .status-text { font-size: 0.8rem; font-weight: 600; }
+    .platform-badge { font-size: 0.75rem; color: var(--dim); }
+    .card-divider { height: 1px; background: var(--border); }
+    .card-route { display: flex; align-items: center; padding: 18px; }
+    .route-origin, .route-dest { flex: 1; }
+    .route-dest { text-align: right; }
+    .route-time { font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+    .route-time-eta { font-size: 0.8rem; font-weight: 600; color: var(--orange); margin-top: 2px; }
+    .route-station { font-size: 0.8rem; color: var(--dim); margin-top: 4px; }
+    .route-middle { flex: 0 0 auto; padding: 0 12px; text-align: center; }
+    .route-arrow { color: var(--dimmer); font-size: 1.2rem; }
+    .card-footer { padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; }
+    .operator-text { font-size: 0.75rem; color: var(--dimmer); }
+    .updated-text { font-size: 0.7rem; color: var(--dimmer); }
+
+    .legs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .leg-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; }
+    .leg-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .leg-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; color: var(--dimmer); }
+    .leg-status { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; }
+    .leg-route { display: flex; align-items: center; justify-content: space-between; }
+    .leg-time { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; }
+    .leg-station { font-size: 0.75rem; color: var(--dim); margin-top: 2px; }
+    .leg-operator { font-size: 0.7rem; color: var(--dimmer); margin-top: 10px; }
+
+    .cta { text-align: center; padding: 32px 0 0; }
+    .cta p { font-size: 0.85rem; color: var(--dimmer); margin-bottom: 16px; }
+    .cta-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--bg); padding: 12px 24px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; text-decoration: none; }
+
+    .refresh-bar { text-align: center; margin-top: 16px; font-size: 0.75rem; color: var(--dimmer); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="https://getplatform.app" class="nav-logo">Platform</a>
+    <div class="nav-badge"><span class="live-dot"></span>Live</div>
+  </nav>
+
+  <div class="container">
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading journey...</p>
+    </div>
+    <div id="content" style="display:none;"></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://mzgqennedmibxgjpqgns.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_uGgPI0l4aVwMf71EhO1daw_vBZJAKjy';
+    const REFRESH_INTERVAL = 30000;
+
+    // Read ID from ?id= query param
+    function getShareID() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+
+    function statusColor(color) {
+      if (color === 'red') return '#ef4444';
+      if (color === 'orange') return '#f97316';
+      return '#22c55e';
+    }
+
+    function timeSince(isoStr) {
+      const diff = Math.floor((Date.now() - new Date(isoStr).getTime()) / 1000);
+      if (diff < 60) return `${diff}s ago`;
+      return `${Math.floor(diff / 60)}m ago`;
+    }
+
+    function renderJourney(data) {
+      const legs = data.legs || [];
+      const color = statusColor(data.status_color);
+      const etaChanged = data.estimated_arrival && data.estimated_arrival !== data.scheduled_arrival && data.estimated_arrival !== 'TBC' && data.estimated_arrival !== 'On time';
+
+      let legsHTML = '';
+      if (data.is_multi_leg && legs.length > 1) {
+        legsHTML = `<div class="legs">` + legs.map((leg, i) => {
+          const lc = leg.is_cancelled ? '#ef4444' : leg.is_delayed ? '#f97316' : '#22c55e';
+          const ls = leg.is_cancelled ? 'Cancelled' : leg.is_delayed ? 'Delayed' : 'On Time';
+          return `
+          <div class="leg-card">
+            <div class="leg-header">
+              <span class="leg-label">LEG ${i+1}</span>
+              <span class="leg-status">
+                <span style="width:6px;height:6px;border-radius:50%;background:${lc};display:inline-block;"></span>
+                <span style="color:${lc}">${ls}</span>
+                ${leg.platform ? `<span style="color:var(--dimmer)">· Plat. ${leg.platform}</span>` : ''}
+              </span>
+            </div>
+            <div class="leg-route">
+              <div>
+                <div class="leg-time">${leg.scheduled_departure}</div>
+                <div class="leg-station">${leg.origin}</div>
+              </div>
+              <div style="color:var(--dimmer)">→</div>
+              <div style="text-align:right">
+                <div class="leg-time">${leg.scheduled_arrival}</div>
+                <div class="leg-station">${leg.destination}</div>
+              </div>
+            </div>
+            <div class="leg-operator">🚂 ${leg.operator}</div>
+          </div>`;
+        }).join('') + `</div>`;
+      }
+
+      return `
+        <div class="journey-card">
+          <div class="card-status">
+            <div class="status-left">
+              <div class="status-dot" style="background:${color};animation:pulse 2s infinite;"></div>
+              <span class="status-text" style="color:${color}">${data.status}</span>
+            </div>
+            ${legs[0]?.platform ? `<span class="platform-badge">Platform ${legs[0].platform}</span>` : ''}
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-route">
+            <div class="route-origin">
+              <div class="route-time">${data.scheduled_departure}</div>
+              <div class="route-station">${data.origin}</div>
+            </div>
+            <div class="route-middle"><div class="route-arrow">→</div></div>
+            <div class="route-dest">
+              <div class="route-time">${data.scheduled_arrival}</div>
+              ${etaChanged ? `<div class="route-time-eta">ETA ${data.estimated_arrival}</div>` : ''}
+              <div class="route-station">${data.destination}</div>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-footer">
+            <span class="operator-text">Shared via Platform</span>
+            <span class="updated-text">Updated ${timeSince(data.updated_at)}</span>
+          </div>
+        </div>
+
+        ${legsHTML}
+
+        <div class="refresh-bar">Auto-refreshes every 30 seconds</div>
+
+        <div class="cta">
+          <p>Track your own journeys with Platform</p>
+          <a href="https://getplatform.app" class="cta-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            Get Platform
+          </a>
+        </div>
+      `;
+    }
+
+    async function fetchJourney() {
+      const id = getShareID();
+      if (!id) {
+        showError('No journey found', 'This link doesn\'t point to a valid journey.');
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/active_journeys?share_id=eq.${id}&select=*`,
+          { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+        );
+        const data = await res.json();
+
+        document.getElementById('loading').style.display = 'none';
+        const content = document.getElementById('content');
+        content.style.display = 'block';
+
+        if (!data || data.length === 0) {
+          content.innerHTML = `<div class="message"><div class="message-icon">🚂</div><h2>Journey not found</h2><p>This link may have expired or doesn't exist.</p></div>`;
+          return;
+        }
+
+        const journey = data[0];
+
+        if (!journey.active) {
+          content.innerHTML = `<div class="message"><div class="message-icon">🏁</div><h2>Journey complete</h2><p>${journey.origin} → ${journey.destination} has ended. Thanks for following along.</p></div>`;
+          return;
+        }
+
+        content.innerHTML = renderJourney(journey);
+
+      } catch (err) {
+        document.getElementById('loading').style.display = 'none';
+        showError('Something went wrong', 'Couldn\'t load this journey. Try refreshing.');
+      }
+    }
+
+    function showError(title, msg) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+      document.getElementById('content').innerHTML = `<div class="message"><div class="message-icon">⚠️</div><h2>${title}</h2><p>${msg}</p></div>`;
+    }
+
+    fetchJourney();
+    setInterval(fetchJourney, REFRESH_INTERVAL);
+  </script>
+</body>
+</html>

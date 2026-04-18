@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --card: #13131c; --border: rgba(255,255,255,0.07);
+      --white: #ffffff; --dim: rgba(255,255,255,0.55); --dimmer: rgba(255,255,255,0.3);
+      --blue: #3b82f6;
+    }
+    body { background: var(--bg); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.8; padding: 0; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 18px 40px; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(10,10,15,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--white); text-decoration: none; }
+    .nav-back { font-size: 0.85rem; color: var(--blue); text-decoration: none; }
+
+    .container { max-width: 680px; margin: 0 auto; padding: 120px 24px 80px; }
+
+    .page-title {
+      font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800;
+      letter-spacing: -0.03em; margin-bottom: 8px;
+    }
+    .last-updated { font-size: 0.85rem; color: var(--dimmer); margin-bottom: 48px; }
+
+    h2 {
+      font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700;
+      letter-spacing: -0.01em; margin-top: 40px; margin-bottom: 12px; color: var(--white);
+    }
+    p { color: var(--dim); margin-bottom: 16px; }
+    ul { color: var(--dim); padding-left: 20px; margin-bottom: 16px; }
+    ul li { margin-bottom: 6px; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .intro-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px 24px; margin-bottom: 40px;
+      color: var(--dim); font-size: 0.95rem; line-height: 1.7;
+    }
+
+    .section { border-top: 1px solid var(--border); padding-top: 0; }
+
+    footer {
+      border-top: 1px solid var(--border); padding: 32px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.95rem; }
+    .footer-right { font-size: 0.8rem; color: var(--dimmer); }
+
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; }
+      .container { padding: 100px 20px 60px; }
+      .page-title { font-size: 1.8rem; }
+      footer { padding: 24px 20px; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">Platform</a>
+    <a href="/" class="nav-back">← Back</a>
+  </nav>
+
+  <div class="container">
+
+    <h1 class="page-title">Privacy Policy</h1>
+    <p class="last-updated">Last updated: April 2026</p>
+
+    <div class="intro-card">
+      Platform is built on a simple principle: your data is yours. We collect the minimum amount of information needed to make the app work, we don't sell it, and we don't share it with advertisers.
+    </div>
+
+    <div class="section">
+
+      <h2>Who we are</h2>
+      <p>Platform is developed by Jamie Snowdon, trading as Platform Rail Ltd, based in the United Kingdom. If you have any questions about this policy, you can reach us at <a href="mailto:hello@getplatform.app">hello@getplatform.app</a>.</p>
+
+      <h2>What data we collect</h2>
+      <p>Platform collects very little data. Here's exactly what we use and why:</p>
+      <ul>
+        <li><strong>Journey data</strong> — When you track a journey, we query the National Rail Darwin API with the station codes you've selected. This request is made directly from your device. We do not store your journey searches on our servers.</li>
+        <li><strong>Shared journey data</strong> — If you choose to share a live journey link, we temporarily store the journey status (origin, destination, current status) in our database so others can view it. This data is deleted automatically when you stop sharing or the journey ends.</li>
+        <li><strong>Local storage</strong> — Your saved journeys, journey history, and app preferences are stored locally on your device using iOS UserDefaults. This data never leaves your device unless you explicitly share a journey.</li>
+        <li><strong>Notification tokens</strong> — If you enable notifications, iOS generates a device token. This is used solely to deliver journey alerts to your device and is not shared with third parties.</li>
+        <li><strong>Crash and diagnostic data</strong> — If you opt in through iOS Settings, Apple may share anonymised crash reports with us. This helps us fix bugs. We do not receive any personally identifiable information through this.</li>
+      </ul>
+
+      <h2>What we don't collect</h2>
+      <ul>
+        <li>Your name, email address, or any account information — Platform requires no sign-up</li>
+        <li>Your location — we never request location permissions</li>
+        <li>Advertising identifiers — we don't run ads and don't use ad tracking</li>
+        <li>Your payment details — all purchases are handled entirely by Apple</li>
+        <li>Any data about how you use the app beyond what's described above</li>
+      </ul>
+
+      <h2>Third-party services</h2>
+      <p>Platform uses the following third-party services to function:</p>
+      <ul>
+        <li><strong>National Rail Darwin API</strong> — provides live train data. Requests include station codes but no personal information. Subject to <a href="https://www.nationalrail.co.uk/100296.aspx" target="_blank">National Rail's terms</a>.</li>
+        <li><strong>Supabase</strong> — used to temporarily store shared journey data when you use the live sharing feature. Data is stored in the EU. Subject to <a href="https://supabase.com/privacy" target="_blank">Supabase's privacy policy</a>.</li>
+        <li><strong>Apple</strong> — handles all in-app purchases, push notification delivery, and crash reporting (if enabled). Subject to <a href="https://www.apple.com/legal/privacy/" target="_blank">Apple's privacy policy</a>.</li>
+      </ul>
+
+      <h2>Data retention</h2>
+      <ul>
+        <li><strong>Shared journey data</strong> is deleted from our servers immediately when you stop sharing or end your journey.</li>
+        <li><strong>Local data</strong> (saved journeys, history) remains on your device until you clear it in Settings or delete the app.</li>
+        <li>We do not retain any server-side logs of your journeys or searches.</li>
+      </ul>
+
+      <h2>Your rights</h2>
+      <p>Under UK GDPR, you have the right to access, correct, or delete any personal data we hold about you. Since we hold almost no personal data, there is very little to request — but if you have any concerns, please contact us at <a href="mailto:hello@getplatform.app">hello@getplatform.app</a> and we will respond within 30 days.</p>
+
+      <h2>Children</h2>
+      <p>Platform is not directed at children under 13. We do not knowingly collect data from children.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>If we make significant changes to this policy, we will update the date at the top of this page. For major changes, we may also add a notice within the app. Your continued use of Platform after changes are posted constitutes your acceptance of the updated policy.</p>
+
+      <h2>Contact</h2>
+      <p>Questions, concerns, or requests about your data: <a href="mailto:hello@getplatform.app">hello@getplatform.app</a></p>
+
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-logo">Platform</span>
+    <span class="footer-right">© 2026 Platform Rail Ltd. Built for UK rail.</span>
+  </footer>
+
+</body>
+</html>
