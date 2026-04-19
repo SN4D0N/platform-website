@@ -7,232 +7,387 @@
   <meta name="description" content="Track this live train journey shared via Platform.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #0a0a0f; --card: #13131c; --border: rgba(255,255,255,0.07);
-      --white: #ffffff; --dim: rgba(255,255,255,0.45); --dimmer: rgba(255,255,255,0.2);
-      --green: #22c55e; --orange: #f97316; --red: #ef4444; --blue: #3b82f6;
+      --bg:          #1a1a1f;
+      --card:        #23232c;
+      --card-inner:  #2a2a35;
+      --border:      rgba(255,255,255,0.07);
+      --border-lit:  rgba(255,255,255,0.12);
+      --text:        #ffffff;
+      --text-soft:   #8e8e9a;
+      --text-faint:  #4a4a58;
+      --blue:        #4a8fff;
+      --green:       #34c759;
+      --amber:       #ff9f0a;
+      --red:         #ff3b30;
+      --sans:        'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --r:           14px;
     }
-    body { background: var(--bg); color: var(--white); font-family: 'DM Sans', sans-serif; min-height: 100vh; padding: 24px 16px 60px; }
 
-    nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
-    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--white); text-decoration: none; }
-    .nav-badge { font-size: 0.7rem; font-weight: 600; color: var(--green); background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); padding: 4px 10px; border-radius: 100px; display: flex; align-items: center; gap: 6px; }
-    .live-dot { width: 5px; height: 5px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
-    .container { max-width: 480px; margin: 0 auto; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
 
+    /* NAV — matches index.html exactly */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 60px;
+      background: rgba(26,26,31,0.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; color: var(--text);
+      font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em;
+    }
+    .logo-pill { display: flex; align-items: center; gap: 3px; }
+    .lp-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); }
+    .lp-dash { width: 13px; height: 3px; border-radius: 2px; background: var(--blue); opacity: 0.45; }
+
+    .live-badge {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(52,199,89,0.1); border: 1px solid rgba(52,199,89,0.22);
+      border-radius: 20px; padding: 5px 12px;
+      font-size: 0.72rem; font-weight: 600; color: var(--green);
+    }
+    .live-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 5px var(--green);
+      animation: blink 2s ease-in-out infinite; flex-shrink: 0;
+    }
+
+    /* MAIN */
+    .main {
+      max-width: 520px; margin: 0 auto;
+      padding: 96px 20px 80px;
+    }
+
+    /* Loading */
     .loading { text-align: center; padding: 80px 0; }
-    .loading-spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading p { color: var(--dim); font-size: 0.9rem; }
+    .spinner {
+      width: 28px; height: 28px; margin: 0 auto 16px;
+      border: 2px solid var(--border); border-top-color: var(--blue);
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    .loading p { font-size: 0.875rem; color: var(--text-soft); }
 
+    /* Message */
     .message { text-align: center; padding: 80px 0; }
-    .message-icon { font-size: 3rem; margin-bottom: 16px; }
-    .message h2 { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
-    .message p { color: var(--dim); font-size: 0.9rem; max-width: 300px; margin: 0 auto; }
+    .message-icon { font-size: 2.8rem; margin-bottom: 16px; }
+    .message h2 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 8px; }
+    .message p { font-size: 0.875rem; color: var(--text-soft); max-width: 280px; margin: 0 auto; line-height: 1.6; }
 
-    .journey-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; margin-bottom: 12px; }
-    .card-status { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; }
-    .status-left { display: flex; align-items: center; gap: 8px; }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .status-text { font-size: 0.8rem; font-weight: 600; }
-    .platform-badge { font-size: 0.75rem; color: var(--dim); }
-    .card-divider { height: 1px; background: var(--border); }
-    .card-route { display: flex; align-items: center; padding: 18px; }
-    .route-origin, .route-dest { flex: 1; }
-    .route-dest { text-align: right; }
-    .route-time { font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
-    .route-time-eta { font-size: 0.8rem; font-weight: 600; color: var(--orange); margin-top: 2px; }
-    .route-station { font-size: 0.8rem; color: var(--dim); margin-top: 4px; }
-    .route-middle { flex: 0 0 auto; padding: 0 12px; text-align: center; }
-    .route-arrow { color: var(--dimmer); font-size: 1.2rem; }
-    .card-footer { padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; }
-    .operator-text { font-size: 0.75rem; color: var(--dimmer); }
-    .updated-text { font-size: 0.7rem; color: var(--dimmer); }
+    /* Journey card */
+    .jcard {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); overflow: hidden; margin-bottom: 8px;
+    }
 
-    .legs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-    .leg-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; }
-    .leg-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-    .leg-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; color: var(--dimmer); }
-    .leg-status { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; }
-    .leg-route { display: flex; align-items: center; justify-content: space-between; }
-    .leg-time { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; }
-    .leg-station { font-size: 0.75rem; color: var(--dim); margin-top: 2px; }
-    .leg-operator { font-size: 0.7rem; color: var(--dimmer); margin-top: 10px; }
+    .jcard-top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px;
+    }
+    .srow { display: flex; align-items: center; gap: 6px; }
+    .sdot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .slabel { font-size: 0.75rem; font-weight: 600; }
 
-    .cta { text-align: center; padding: 32px 0 0; }
-    .cta p { font-size: 0.85rem; color: var(--dimmer); margin-bottom: 16px; }
-    .cta-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--bg); padding: 12px 24px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; text-decoration: none; }
+    .platform-badge {
+      font-size: 0.7rem; font-weight: 500; color: var(--text-soft);
+      background: var(--card-inner); padding: 3px 9px;
+      border-radius: 6px; flex-shrink: 0;
+    }
 
-    .refresh-bar { text-align: center; margin-top: 16px; font-size: 0.75rem; color: var(--dimmer); }
+    .divider { height: 1px; background: var(--border); }
+
+    /* Route row */
+    .jcard-main {
+      background: var(--card-inner);
+      padding: 14px;
+    }
+    .jendpoints {
+      display: flex; align-items: flex-end;
+      gap: 8px;
+    }
+    .jep { flex: 1; min-width: 0; }
+    .jep-right { text-align: right; }
+    .jstation { font-size: 0.7rem; color: var(--text-soft); margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .jtime {
+      font-size: clamp(1.8rem, 8vw, 2.2rem);
+      font-weight: 700; letter-spacing: -0.04em; line-height: 1;
+      white-space: nowrap;
+    }
+    .jtime-eta {
+      font-size: 0.72rem; font-weight: 600; color: var(--amber);
+      margin-top: 3px; white-space: nowrap;
+    }
+    .jmid {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 2px; flex-shrink: 0; padding-bottom: 3px;
+    }
+    .jmid-arr { font-size: 0.85rem; color: var(--text-faint); }
+
+    .jcard-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 14px;
+    }
+    .jcard-footer span { font-size: 0.7rem; color: var(--text-faint); }
+
+    /* Multi-leg */
+    .legs { display: flex; flex-direction: column; gap: 7px; margin-bottom: 8px; }
+    .lcard {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 12px;
+    }
+    .lhdr {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .llbl { font-size: 0.62rem; font-weight: 700; letter-spacing: .07em; color: var(--text-faint); }
+    .lstatus { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 600; }
+    .ltimes { display: flex; align-items: flex-end; gap: 8px; }
+    .ltep { flex: 1; min-width: 0; }
+    .ltep-right { text-align: right; }
+    .ltime {
+      font-size: clamp(1.3rem, 6vw, 1.6rem);
+      font-weight: 700; letter-spacing: -0.04em; line-height: 1; white-space: nowrap;
+    }
+    .lstation { font-size: 0.68rem; color: var(--text-soft); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .lop { font-size: 0.68rem; color: var(--text-faint); margin-top: 9px; }
+
+    /* Refresh + CTA */
+    .refresh-bar { text-align: center; font-size: 0.7rem; color: var(--text-faint); margin: 10px 0 28px; }
+
+    .cta-block { text-align: center; }
+    .cta-block p { font-size: 0.82rem; color: var(--text-soft); margin-bottom: 14px; }
+    .store-btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: var(--card); border: 1px solid var(--border-lit);
+      border-radius: var(--r); padding: 11px 20px;
+      text-decoration: none; transition: all .2s;
+    }
+    .store-btn:hover { border-color: rgba(255,255,255,.2); transform: translateY(-2px); }
+    .s-icon { font-size: 1.4rem; }
+    .s-grp { text-align: left; }
+    .s-l1 { font-size: 0.6rem; color: var(--text-soft); display: block; }
+    .s-l2 { font-size: 0.88rem; font-weight: 600; letter-spacing: -0.01em; }
+
+    /* FOOTER */
+    hr.rule { border: none; height: 1px; background: var(--border); margin-top: 60px; }
+    footer { max-width: 960px; margin: 0 auto; padding: 38px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .flogo { font-size: 0.95rem; font-weight: 700; color: var(--text-soft); text-decoration: none; letter-spacing: -0.02em; }
+    .flinks { display: flex; gap: 22px; list-style: none; }
+    .flinks a { font-size: 0.78rem; color: var(--text-faint); text-decoration: none; transition: color .2s; }
+    .flinks a:hover { color: var(--text-soft); }
+    .fcopy { font-size: 0.75rem; color: var(--text-faint); }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 16px; }
+      footer { flex-direction: column; gap: 20px; text-align: center; }
+      .flinks { flex-wrap: wrap; justify-content: center; }
+    }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="https://getplatform.app" class="nav-logo">Platform</a>
-    <div class="nav-badge"><span class="live-dot"></span>Live</div>
-  </nav>
 
-  <div class="container">
-    <div id="loading" class="loading">
-      <div class="loading-spinner"></div>
-      <p>Loading journey...</p>
-    </div>
-    <div id="content" style="display:none;"></div>
+<nav>
+  <a href="https://getplatform.app" class="logo">
+    Platform
+    <span class="logo-pill"><span class="lp-dot"></span><span class="lp-dash"></span></span>
+  </a>
+  <div class="live-badge"><span class="live-dot"></span>Live</div>
+</nav>
+
+<div class="main">
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading journey...</p>
   </div>
+  <div id="content" style="display:none;"></div>
+</div>
 
-  <script>
-    const SUPABASE_URL = 'https://mzgqennedmibxgjpqgns.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_uGgPI0l4aVwMf71EhO1daw_vBZJAKjy';
-    const REFRESH_INTERVAL = 30000;
+<hr class="rule">
+<footer>
+  <a href="https://getplatform.app" class="flogo">Platform</a>
+  <ul class="flinks">
+    <li><a href="/privacy">Privacy</a></li>
+    <li><a href="mailto:hello@getplatform.app">Support</a></li>
+  </ul>
+  <span class="fcopy">© 2026 Platform</span>
+</footer>
 
-    // Read ID from ?id= query param
-    function getShareID() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('id');
-    }
+<script>
+  const SUPABASE_URL = 'https://mzgqennedmibxgjpqgns.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_uGgPI0l4aVwMf71EhO1daw_vBZJAKjy';
+  const REFRESH_MS = 30000;
 
-    function statusColor(color) {
-      if (color === 'red') return '#ef4444';
-      if (color === 'orange') return '#f97316';
-      return '#22c55e';
-    }
+  function getShareID() {
+    return new URLSearchParams(window.location.search).get('id');
+  }
 
-    function timeSince(isoStr) {
-      const diff = Math.floor((Date.now() - new Date(isoStr).getTime()) / 1000);
-      if (diff < 60) return `${diff}s ago`;
-      return `${Math.floor(diff / 60)}m ago`;
-    }
+  function statusColor(color) {
+    if (color === 'red') return 'var(--red)';
+    if (color === 'orange') return 'var(--amber)';
+    return 'var(--green)';
+  }
 
-    function renderJourney(data) {
-      const legs = data.legs || [];
-      const color = statusColor(data.status_color);
-      const etaChanged = data.estimated_arrival && data.estimated_arrival !== data.scheduled_arrival && data.estimated_arrival !== 'TBC' && data.estimated_arrival !== 'On time';
+  function timeSince(isoStr) {
+    const diff = Math.floor((Date.now() - new Date(isoStr).getTime()) / 1000);
+    if (diff < 10) return 'just now';
+    if (diff < 60) return `${diff}s ago`;
+    return `${Math.floor(diff / 60)}m ago`;
+  }
 
-      let legsHTML = '';
-      if (data.is_multi_leg && legs.length > 1) {
-        legsHTML = `<div class="legs">` + legs.map((leg, i) => {
-          const lc = leg.is_cancelled ? '#ef4444' : leg.is_delayed ? '#f97316' : '#22c55e';
-          const ls = leg.is_cancelled ? 'Cancelled' : leg.is_delayed ? 'Delayed' : 'On Time';
-          return `
-          <div class="leg-card">
-            <div class="leg-header">
-              <span class="leg-label">LEG ${i+1}</span>
-              <span class="leg-status">
-                <span style="width:6px;height:6px;border-radius:50%;background:${lc};display:inline-block;"></span>
-                <span style="color:${lc}">${ls}</span>
-                ${leg.platform ? `<span style="color:var(--dimmer)">· Plat. ${leg.platform}</span>` : ''}
-              </span>
-            </div>
-            <div class="leg-route">
-              <div>
-                <div class="leg-time">${leg.scheduled_departure}</div>
-                <div class="leg-station">${leg.origin}</div>
-              </div>
-              <div style="color:var(--dimmer)">→</div>
-              <div style="text-align:right">
-                <div class="leg-time">${leg.scheduled_arrival}</div>
-                <div class="leg-station">${leg.destination}</div>
-              </div>
-            </div>
-            <div class="leg-operator">🚂 ${leg.operator}</div>
-          </div>`;
-        }).join('') + `</div>`;
-      }
+  function renderJourney(data) {
+    const legs = data.legs || [];
+    const color = statusColor(data.status_color);
+    const etaChanged = data.estimated_arrival &&
+      data.estimated_arrival !== data.scheduled_arrival &&
+      data.estimated_arrival !== 'TBC' &&
+      data.estimated_arrival !== 'On time';
 
-      return `
-        <div class="journey-card">
-          <div class="card-status">
-            <div class="status-left">
-              <div class="status-dot" style="background:${color};animation:pulse 2s infinite;"></div>
-              <span class="status-text" style="color:${color}">${data.status}</span>
-            </div>
-            ${legs[0]?.platform ? `<span class="platform-badge">Platform ${legs[0].platform}</span>` : ''}
-          </div>
-          <div class="card-divider"></div>
-          <div class="card-route">
-            <div class="route-origin">
-              <div class="route-time">${data.scheduled_departure}</div>
-              <div class="route-station">${data.origin}</div>
-            </div>
-            <div class="route-middle"><div class="route-arrow">→</div></div>
-            <div class="route-dest">
-              <div class="route-time">${data.scheduled_arrival}</div>
-              ${etaChanged ? `<div class="route-time-eta">ETA ${data.estimated_arrival}</div>` : ''}
-              <div class="route-station">${data.destination}</div>
+    const platformDisplay = legs.length > 0
+      ? (legs[legs.length - 1]?.platform || legs[0]?.platform)
+      : null;
+
+    let legsHTML = '';
+    if (data.is_multi_leg && legs.length > 1) {
+      legsHTML = `<div class="legs">` + legs.map((leg, i) => {
+        const lc = leg.is_cancelled ? 'var(--red)' : leg.is_delayed ? 'var(--amber)' : 'var(--green)';
+        const ls = leg.is_cancelled ? 'Cancelled' : leg.is_delayed ? 'Delayed' : 'On Time';
+        return `
+        <div class="lcard">
+          <div class="lhdr">
+            <span class="llbl">LEG ${i+1}</span>
+            <div class="lstatus">
+              <div class="sdot" style="background:${lc};box-shadow:0 0 5px ${lc};"></div>
+              <span style="color:${lc}">${ls}</span>
+              ${leg.platform ? `<span style="color:var(--text-faint);font-weight:400">&nbsp;· Plat. ${leg.platform}</span>` : ''}
             </div>
           </div>
-          <div class="card-divider"></div>
-          <div class="card-footer">
-            <span class="operator-text">Shared via Platform</span>
-            <span class="updated-text">Updated ${timeSince(data.updated_at)}</span>
+          <div class="ltimes">
+            <div class="ltep">
+              <div class="ltime">${leg.scheduled_departure}</div>
+              <div class="lstation">${leg.origin}</div>
+            </div>
+            <span style="color:var(--text-faint);flex-shrink:0;padding-bottom:4px;">→</span>
+            <div class="ltep ltep-right">
+              <div class="ltime">${leg.scheduled_arrival}</div>
+              <div class="lstation">${leg.destination}</div>
+            </div>
+          </div>
+          <div class="lop">🚆 ${leg.operator}</div>
+        </div>`;
+      }).join('') + `</div>`;
+    }
+
+    return `
+      <div class="jcard" style="border-color:${data.status_color === 'green' ? 'var(--border)' : color + '44'};">
+        <div class="jcard-top">
+          <div class="srow">
+            <div class="sdot" style="background:${color};box-shadow:0 0 6px ${color};"></div>
+            <span class="slabel" style="color:${color}">${data.status}</span>
+          </div>
+          ${platformDisplay ? `<span class="platform-badge">Plat. ${platformDisplay}</span>` : ''}
+        </div>
+        <div class="divider"></div>
+        <div class="jcard-main">
+          <div class="jendpoints">
+            <div class="jep">
+              <div class="jstation">${data.origin}</div>
+              <div class="jtime">${data.scheduled_departure}</div>
+            </div>
+            <div class="jmid">
+              <span class="jmid-arr">→</span>
+            </div>
+            <div class="jep jep-right">
+              <div class="jstation">${data.destination}</div>
+              <div class="jtime">${data.scheduled_arrival}</div>
+              ${etaChanged ? `<div class="jtime-eta">ETA ${data.estimated_arrival}</div>` : ''}
+            </div>
           </div>
         </div>
-
-        ${legsHTML}
-
-        <div class="refresh-bar">Auto-refreshes every 30 seconds</div>
-
-        <div class="cta">
-          <p>Track your own journeys with Platform</p>
-          <a href="https://getplatform.app" class="cta-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-            Get Platform
-          </a>
+        <div class="divider"></div>
+        <div class="jcard-footer">
+          <span>Shared via Platform</span>
+          <span>Updated ${timeSince(data.updated_at)}</span>
         </div>
-      `;
-    }
+      </div>
 
-    async function fetchJourney() {
-      const id = getShareID();
-      if (!id) {
-        showError('No journey found', 'This link doesn\'t point to a valid journey.');
+      ${legsHTML}
+
+      <div class="refresh-bar">Refreshes every 30 seconds</div>
+
+      <div class="cta-block">
+        <p>Track your own journeys with Platform</p>
+        <a href="https://getplatform.app" class="store-btn">
+          <span class="s-icon">🍎</span>
+          <div class="s-grp">
+            <span class="s-l1">Download on the</span>
+            <span class="s-l2">App Store</span>
+          </div>
+        </a>
+      </div>
+    `;
+  }
+
+  async function fetchJourney() {
+    const id = getShareID();
+    if (!id) { showError('No journey found', "This link doesn't point to a valid journey."); return; }
+
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/active_journeys?share_id=eq.${id}&select=*`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      );
+      const data = await res.json();
+
+      document.getElementById('loading').style.display = 'none';
+      const content = document.getElementById('content');
+      content.style.display = 'block';
+
+      if (!data || data.length === 0) {
+        content.innerHTML = `<div class="message"><div class="message-icon">🚂</div><h2>Journey ended</h2><p>This journey has finished or the link has expired.</p></div>`;
         return;
       }
 
-      try {
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/active_journeys?share_id=eq.${id}&select=*`,
-          { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-        );
-        const data = await res.json();
-
-        document.getElementById('loading').style.display = 'none';
-        const content = document.getElementById('content');
-        content.style.display = 'block';
-
-        if (!data || data.length === 0) {
-          content.innerHTML = `<div class="message"><div class="message-icon">🚂</div><h2>Journey not found</h2><p>This link may have expired or doesn't exist.</p></div>`;
-          return;
-        }
-
-        const journey = data[0];
-
-        if (!journey.active) {
-          content.innerHTML = `<div class="message"><div class="message-icon">🏁</div><h2>Journey complete</h2><p>${journey.origin} → ${journey.destination} has ended. Thanks for following along.</p></div>`;
-          return;
-        }
-
-        content.innerHTML = renderJourney(journey);
-
-      } catch (err) {
-        document.getElementById('loading').style.display = 'none';
-        showError('Something went wrong', 'Couldn\'t load this journey. Try refreshing.');
+      const journey = data[0];
+      if (!journey.active) {
+        content.innerHTML = `<div class="message"><div class="message-icon">🏁</div><h2>Journey complete</h2><p>${journey.origin} → ${journey.destination} has ended.</p></div>`;
+        return;
       }
-    }
 
-    function showError(title, msg) {
+      content.innerHTML = renderJourney(journey);
+
+    } catch (err) {
       document.getElementById('loading').style.display = 'none';
-      document.getElementById('content').style.display = 'block';
-      document.getElementById('content').innerHTML = `<div class="message"><div class="message-icon">⚠️</div><h2>${title}</h2><p>${msg}</p></div>`;
+      showError('Something went wrong', "Couldn't load this journey. Try refreshing.");
     }
+  }
 
-    fetchJourney();
-    setInterval(fetchJourney, REFRESH_INTERVAL);
-  </script>
+  function showError(title, msg) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    document.getElementById('content').innerHTML = `<div class="message"><div class="message-icon">⚠️</div><h2>${title}</h2><p>${msg}</p></div>`;
+  }
+
+  fetchJourney();
+  setInterval(fetchJourney, REFRESH_MS);
+</script>
 </body>
 </html>
