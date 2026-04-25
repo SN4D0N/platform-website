@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #1a1a1f;
+      --card:        #23232c;
+      --card-inner:  #2a2a35;
+      --border:      rgba(255,255,255,0.07);
+      --border-lit:  rgba(255,255,255,0.12);
+      --text:        #ffffff;
+      --text-soft:   #8e8e9a;
+      --text-faint:  #4a4a58;
+      --blue:        #4a8fff;
+      --green:       #34c759;
+      --sans:        'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --r:           14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 60px;
+      background: rgba(26,26,31,0.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; color: var(--text);
+      font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em;
+    }
+    .logo-pill { display: flex; align-items: center; gap: 3px; }
+    .lp-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); }
+    .lp-dash { width: 13px; height: 3px; border-radius: 2px; background: var(--blue); opacity: 0.45; }
+    .nav-back { font-size: 0.82rem; font-weight: 500; color: var(--text-soft); text-decoration: none; transition: color .2s; }
+    .nav-back:hover { color: var(--text); }
+
+    .main { max-width: 680px; margin: 0 auto; padding: 100px 24px 80px; }
+
+    .page-eyebrow { font-size: 0.7rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--blue); margin-bottom: 12px; }
+    h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 8px; }
+    .last-updated { font-size: 0.78rem; color: var(--text-faint); margin-bottom: 40px; }
+
+    .intro-card {
+      background: var(--card); border: 1px solid var(--border-lit);
+      border-radius: var(--r); padding: 18px 20px;
+      font-size: 0.9rem; color: var(--text-soft); line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    hr.section-rule { border: none; height: 1px; background: var(--border); margin: 36px 0; }
+
+    h2 { font-size: 1rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 10px; }
+    p { font-size: 0.9rem; color: var(--text-soft); line-height: 1.75; margin-bottom: 14px; }
+    ul { list-style: none; margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; }
+    ul li { font-size: 0.875rem; color: var(--text-soft); line-height: 1.65; display: flex; align-items: flex-start; gap: 10px; }
+    ul li::before {
+      content: ''; width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; margin-top: 3px;
+      background: rgba(74,143,255,0.1) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%234a8fff' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/10px no-repeat;
+      border: 1px solid rgba(74,143,255,0.22);
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    strong { color: var(--text); font-weight: 600; }
+
+    hr.rule { border: none; height: 1px; background: var(--border); margin-top: 60px; }
+    footer { max-width: 960px; margin: 0 auto; padding: 38px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .flogo { font-size: 0.95rem; font-weight: 700; color: var(--text-soft); text-decoration: none; letter-spacing: -0.02em; }
+    .flinks { display: flex; gap: 22px; list-style: none; }
+    .flinks a { font-size: 0.78rem; color: var(--text-faint); text-decoration: none; transition: color .2s; }
+    .flinks a:hover { color: var(--text-soft); }
+    .fcopy { font-size: 0.75rem; color: var(--text-faint); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 16px; }
+      footer { flex-direction: column; gap: 20px; text-align: center; }
+      .flinks { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="https://getplatform.app" class="logo">
+    Platform
+    <span class="logo-pill"><span class="lp-dot"></span><span class="lp-dash"></span></span>
+  </a>
+  <a href="https://getplatform.app" class="nav-back">← Back</a>
+</nav>
+
+<div class="main">
+
+  <div class="page-eyebrow">Legal</div>
+  <h1>Terms of Service</h1>
+  <p class="last-updated">Last updated: April 2026</p>
+
+  <div class="intro-card">
+    By downloading or using Platform, you agree to these terms. They're written to be readable — not to trap you. If something isn't clear, email us at <a href="mailto:hello@getplatform.app">hello@getplatform.app</a>.
+  </div>
+
+  <h2>1. Who we are</h2>
+  <p>Platform is operated by Platform Rail Ltd, a company registered in England and Wales. Contact us at <a href="mailto:hello@getplatform.app">hello@getplatform.app</a>.</p>
+
+  <hr class="section-rule">
+
+  <h2>2. What Platform does</h2>
+  <p>Platform is a UK rail journey tracking app for iOS. It uses live data from the National Rail Darwin API to provide real-time departure information, delay alerts, and journey tracking. Platform is an independent app and is not affiliated with National Rail, any train operating company, or Transport for London.</p>
+
+  <hr class="section-rule">
+
+  <h2>3. Accuracy of information</h2>
+  <p>Platform displays live data from third-party sources. While we work to make this data as accurate and timely as possible, we cannot guarantee it is always correct or up to date. Do not rely solely on Platform for safety-critical travel decisions — always check official sources when in doubt.</p>
+  <ul>
+    <li>Train times, platforms, and delays are sourced from National Rail and may lag behind real-world changes</li>
+    <li>Platform is not responsible for missed trains, missed connections, or other consequences arising from inaccurate data</li>
+    <li>Journey sharing links are provided as a convenience and should not be treated as official travel documentation</li>
+  </ul>
+
+  <hr class="section-rule">
+
+  <h2>4. Subscriptions and payments</h2>
+  <p>Platform is available on a subscription basis, managed through Apple's App Store. By subscribing, you agree to Apple's payment terms in addition to ours.</p>
+  <ul>
+    <li>Subscriptions automatically renew unless cancelled at least 24 hours before the renewal date</li>
+    <li>You can manage or cancel your subscription in your iPhone Settings → Apple ID → Subscriptions</li>
+    <li>Refunds are handled by Apple in accordance with their refund policy</li>
+    <li>Prices are shown in GBP inclusive of any applicable VAT</li>
+    <li>Lifetime purchases are a one-time payment with no recurring charge</li>
+  </ul>
+
+  <hr class="section-rule">
+
+  <h2>5. Free trial</h2>
+  <p>Weekly and annual subscriptions include a 7-day free trial for new subscribers. You will not be charged during the trial period. If you do not cancel before the trial ends, your subscription will begin and payment will be taken.</p>
+
+  <hr class="section-rule">
+
+  <h2>6. Acceptable use</h2>
+  <p>You agree to use Platform only for its intended purpose — tracking your own train journeys. You must not:</p>
+  <ul>
+    <li>Attempt to reverse engineer, scrape, or automate requests to Platform's backend systems</li>
+    <li>Use Platform in a way that disrupts or degrades the service for other users</li>
+    <li>Use Platform for commercial resale of National Rail data</li>
+    <li>Circumvent subscription requirements through any technical means</li>
+  </ul>
+
+  <hr class="section-rule">
+
+  <h2>7. Intellectual property</h2>
+  <p>Platform, its name, logo, and design are owned by Platform Rail Ltd. You may not copy, modify, or distribute any part of the app or its content without our written permission. National Rail data is licensed under terms set by Retail Data Partnership and is used in accordance with those terms.</p>
+
+  <hr class="section-rule">
+
+  <h2>8. Disclaimers and limitation of liability</h2>
+  <p>Platform is provided "as is" without warranty of any kind. To the extent permitted by law, Platform Rail Ltd is not liable for any indirect, incidental, or consequential damages arising from your use of the app, including but not limited to missed trains or travel disruption.</p>
+  <p>Nothing in these terms limits our liability for fraud, death, or personal injury caused by our negligence.</p>
+
+  <hr class="section-rule">
+
+  <h2>9. Changes to the service</h2>
+  <p>We may update, change, or discontinue features of Platform at any time. We'll give reasonable notice of significant changes where possible. Continued use of Platform after changes take effect constitutes acceptance of the updated terms.</p>
+
+  <hr class="section-rule">
+
+  <h2>10. Governing law</h2>
+  <p>These terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+
+  <hr class="section-rule">
+
+  <h2>11. Contact</h2>
+  <p>Questions about these terms: <a href="mailto:hello@getplatform.app">hello@getplatform.app</a></p>
+
+</div>
+
+<hr class="rule">
+<footer>
+  <a href="https://getplatform.app" class="flogo">Platform</a>
+  <ul class="flinks">
+    <li><a href="/privacy">Privacy</a></li>
+    <li><a href="/terms">Terms</a></li>
+    <li><a href="mailto:hello@getplatform.app">Support</a></li>
+  </ul>
+  <span class="fcopy">© 2026 Platform Rail Ltd</span>
+</footer>
+
+</body>
+</html>
