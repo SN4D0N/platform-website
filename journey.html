@@ -69,6 +69,11 @@
       animation: blink 2s ease-in-out infinite; flex-shrink: 0;
     }
 
+    .arrived-card { border-color: rgba(52,199,89,0.3) !important; background: linear-gradient(155deg, var(--card) 55%, rgba(52,199,89,0.06)) !important; }
+    .status-dot.arrived { background: var(--green); box-shadow: 0 0 8px var(--green); animation: none; }
+    .status-text.arrived { color: var(--green); }
+    .arrived-label { color: var(--green) !important; }
+
     /* MAIN */
     .main {
       max-width: 520px; margin: 0 auto;
@@ -208,7 +213,7 @@
 <nav>
   <a href="https://getplatform.app" class="logo">
     Platform
-    <span class="logo-pill"><span class="lp-dot"></span><span class="lp-dash"></span></span>
+    <span class="logo-pill"><span class="lp-dash"></span><span class="lp-dot"></span><span class="lp-dash"></span></span>
   </a>
   <div class="live-badge"><span class="live-dot"></span>Live</div>
 </nav>
@@ -325,7 +330,7 @@
         <div class="divider"></div>
         <div class="jcard-footer">
           <span>Shared via Platform</span>
-          <span>Updated ${timeSince(data.updated_at)}</span>
+          <span>Checked ${timeSince(data.updated_at)}</span>
         </div>
       </div>
 
@@ -368,7 +373,29 @@
 
       const journey = data[0];
       if (!journey.active) {
-        content.innerHTML = `<div class="message"><div class="message-icon">🏁</div><h2>Journey complete</h2><p>${journey.origin} → ${journey.destination} has ended.</p></div>`;
+        // Show arrived state with full journey details for 1 hour after completion
+        content.innerHTML = `
+          <div class="journey-card arrived-card">
+            <div class="status-row">
+              <div class="status-dot arrived"></div>
+              <span class="status-text arrived">Arrived</span>
+            </div>
+            <div class="route-row">
+              <div class="endpoint">
+                <div class="time">${journey.scheduled_departure || ''}</div>
+                <div class="station">${journey.origin || ''}</div>
+              </div>
+              <div class="arrow">🏁</div>
+              <div class="endpoint right">
+                <div class="time">${journey.scheduled_arrival || ''}</div>
+                <div class="station">${journey.destination || ''}</div>
+              </div>
+            </div>
+            <div class="footer-row">
+              <span class="live-label arrived-label">Journey complete</span>
+              <span class="updated">Link expires soon</span>
+            </div>
+          </div>`;
         return;
       }
 
